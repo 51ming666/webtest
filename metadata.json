@@ -1,0 +1,5 @@
+{
+  "name": "智云论坛 (ZhiYun Forum)",
+  "description": "一个基于React和Tailwind CSS构建的现代化论坛应用。包含用户发帖、评论、AI辅助回复以及完整的管理员后台管理功能。",
+  "requestFramePermissions": []
+}
