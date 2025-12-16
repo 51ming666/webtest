@@ -1,5 +1,5 @@
 {
-  "name": "智云论坛-(zhiyun-forum)",
+  "name": "物联网工作室论坛",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "react": "^19.2.3",
-    "@google/genai": "^1.33.0",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "@google/genai": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
