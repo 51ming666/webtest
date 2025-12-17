@@ -43,8 +43,8 @@ const seedUsers: User[] = [
 const seedPosts: Post[] = [
   {
     id: '1',
-    title: '🎉 欢迎来到物联网工作室论坛 - 社区指南',
-    content: '欢迎大家来到物联网工作室！\n\n这是一个专注于 IoT 技术、嵌入式开发和硬件创新的交流社区。\n\n1. 探讨 MQTT, CoAP 等协议。\n2. 分享 ESP32, STM32 开发经验。\n3. 友好交流，共同进步。\n\n希望大家在这里玩得开心！',
+    title: '🎉 欢迎来到阿弥诺斯工作室论坛 - 社区指南',
+    content: '欢迎大家来到阿弥诺斯工作室！\n\n这是一个专注于技术交流和知识分享的创新社区。\n\n1. 探讨前沿技术发展趋势。\n2. 分享项目经验和学习心得。\n3. 友好交流，共同进步。\n\n希望大家在这里玩得开心！',
     author: 'admin',
     authorAvatarColor: 'bg-indigo-600',
     category: '公告',
@@ -57,7 +57,7 @@ const seedPosts: Post[] = [
         postId: '1', 
         author: 'iot_dev', 
         authorAvatarColor: 'bg-emerald-500',
-        content: '前排支持！终于有个像样的 IoT 社区了。', 
+        content: '前排支持！终于有个像样的技术交流社区了。', 
         createdAt: new Date(Date.now() - 86000000).toISOString() 
       }
     ]

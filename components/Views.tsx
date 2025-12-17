@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { User, Post, Comment, Role } from '../types';
+import { User, Post, Comment, Role, SearchResult } from '../types/enhanced';
 import { store } from '../services/store';
 import { generateSmartReply, summarizeThread } from '../services/aiService';
+import { SearchBar } from './SearchBar';
+import { EditPost } from './EditPost';
+import { UserProfile } from './UserProfile';
+import { HomeSEO, PostSEO, UserProfileSEO } from './SEOHead';
 
 // --- Utility Components ---
 
@@ -64,18 +68,18 @@ export const AboutView: React.FC = () => (
   <div className="max-w-3xl mx-auto bg-white p-10 rounded-xl shadow-sm border border-slate-200">
     <div className="text-center mb-10">
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-900 text-white font-bold text-3xl mb-4">?</div>
-      <h1 className="text-3xl font-bold text-slate-900">关于物联网工作室...的测试版</h1>
+      <h1 className="text-3xl font-bold text-slate-900">关于阿弥诺斯工作室...的测试版</h1>
     </div>
     
     <div className="prose prose-slate max-w-none text-slate-600 space-y-6">
       <p className="lead text-lg">
-        欢迎光临！这里是传说中的“物联网工作室论坛”。如果你觉得这里看起来有点空，那是因为我们的物联网设备还在快递路上（或者根本没买）。
+        欢迎光临！这里是传说中的"阿弥诺斯工作室论坛"。如果你觉得这里看起来有点空，那是因为我们的高科技设备还在快递路上（或者根本没买）。
       </p>
 
       <h3 className="text-xl font-bold text-slate-800">我们是谁？</h3>
       <p>
         我们是一个由 <span className="font-bold text-slate-900">1% 的代码</span> 和 <span className="font-bold text-slate-900">99% 的 Debug 时间</span> 组成的精英团队。
-        我们的目标是连接万物，但目前主要成就是成功连接了您的浏览器和我们摇摇欲坠的服务器。
+        我们的目标是探索创新，但目前主要成就是成功连接了您的浏览器和我们摇摇欲坠的服务器。
       </p>
       
       <h3 className="text-xl font-bold text-slate-800">为什么做这个？</h3>
@@ -86,7 +90,7 @@ export const AboutView: React.FC = () => (
 
       <h3 className="text-xl font-bold text-slate-800">联系我们</h3>
       <p>
-        你可以尝试对着屏幕大喊三声“Hello World”，如果我们的 AI 听到了，它可能会回复你（概率 < 0.01%）。
+        你可以尝试对着屏幕大喊三声"Hello World"，如果我们的 AI 听到了，它可能会回复你（概率 &lt; 0.01%）。
         或者，您也可以心里默念我们的好，我们会感应到的。
       </p>
     </div>
@@ -120,7 +124,7 @@ export const TermsView: React.FC = () => (
         </li>
         <li className="pl-2">
           <span className="font-bold text-slate-900">内容责任</span>
-          <p className="mt-1 ml-6 text-sm text-slate-500">您发的帖子如果太好笑导致服务器 CPU 过热笑崩了，我们概不负责。严禁发布正经得让人想睡觉的内容，这里是物联网工作室，不是数理化补习班。</p>
+          <p className="mt-1 ml-6 text-sm text-slate-500">您发的帖子如果太好笑导致服务器 CPU 过热笑崩了，我们概不负责。严禁发布正经得让人想睡觉的内容，这里是阿弥诺斯工作室，不是数理化补习班。</p>
         </li>
       </ol>
     </div>
@@ -208,7 +212,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onRegisterClick }
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg border border-slate-100">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-900 text-white font-bold text-xl mb-4">I</div>
-          <h1 className="text-2xl font-bold text-slate-900">登录物联网工作室</h1>
+          <h1 className="text-2xl font-bold text-slate-900">登录阿弥诺斯工作室</h1>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -376,7 +380,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onRegisterSuccess, o
         )}
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">加入物联网工作室</h1>
+          <h1 className="text-2xl font-bold text-slate-900">加入阿弥诺斯工作室</h1>
           <p className="mt-2 text-slate-500 text-sm">选择您喜欢的注册方式</p>
         </div>
 
@@ -678,9 +682,10 @@ interface ForumHomeProps {
   onPostClick: (id: string) => void;
   onCreatePostClick: () => void;
   onCategoryClick: (cat: string) => void;
+  onSearch: (results: SearchResult[]) => void;
 }
 
-export const ForumHome: React.FC<ForumHomeProps> = ({ onPostClick, onCreatePostClick, onCategoryClick }) => {
+export const ForumHome: React.FC<ForumHomeProps> = ({ onPostClick, onCreatePostClick, onCategoryClick, onSearch }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [onlineCount, setOnlineCount] = useState<number | null>(null);
 
@@ -700,6 +705,11 @@ export const ForumHome: React.FC<ForumHomeProps> = ({ onPostClick, onCreatePostC
       <div className="w-full md:w-64 flex-shrink-0 space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
            <Button onClick={onCreatePostClick} className="w-full mb-4 shadow-sm">+ 新建话题</Button>
+
+           {/* 搜索栏 */}
+           <div className="mb-4">
+             <SearchBar onSearch={onSearch} placeholder="搜索帖子或用户..." />
+           </div>
            <nav className="space-y-1">
              {categories.map(cat => (
                <button 
@@ -794,9 +804,10 @@ interface PostDetailProps {
   postId: string;
   currentUser: User | null;
   onBack: () => void;
+  onUserClick?: (userId: string) => void;
 }
 
-export const PostDetail: React.FC<PostDetailProps> = ({ postId, currentUser, onBack }) => {
+export const PostDetail: React.FC<PostDetailProps> = ({ postId, currentUser, onBack, onUserClick }) => {
   const [post, setPost] = useState<Post | undefined>();
   const [newComment, setNewComment] = useState('');
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
@@ -848,7 +859,17 @@ export const PostDetail: React.FC<PostDetailProps> = ({ postId, currentUser, onB
         {/* OP Post */}
         <div className="p-6 md:p-8 flex gap-6 border-b border-slate-100">
            <div className="flex-shrink-0 flex flex-col items-center gap-2 w-20">
-              <Avatar name={post.author} color={post.authorAvatarColor} size="lg" />
+              <div
+                className="cursor-pointer hover:opacity-80 transition"
+                onClick={() => {
+                  if (onUserClick) {
+                    const user = store.getUsers().find(u => u.username === post.author);
+                    if (user) onUserClick(user.id);
+                  }
+                }}
+              >
+                <Avatar name={post.author} color={post.authorAvatarColor} size="lg" />
+              </div>
               <span className="text-xs font-bold text-slate-700 truncate w-full text-center">{post.author}</span>
               <span className="px-1.5 py-0.5 bg-slate-100 rounded text-[10px] text-slate-500">楼主</span>
            </div>
@@ -857,6 +878,19 @@ export const PostDetail: React.FC<PostDetailProps> = ({ postId, currentUser, onB
               <div className="flex justify-between items-center mb-4 text-xs text-slate-400">
                  <span>发布于 {new Date(post.createdAt).toLocaleString()}</span>
                  <div className="flex gap-2">
+                    {currentUser && (currentUser.username === post.author || currentUser.role === 'admin') && (
+                      <button
+                        onClick={() => {
+                          if (onUserClick) {
+                            const user = store.getUsers().find(u => u.username === post.author);
+                            if (user) onUserClick(user.id);
+                          }
+                        }}
+                        className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition"
+                      >
+                        ✏️ 编辑
+                      </button>
+                    )}
                     {post.comments.length > 3 && (
                       <button onClick={handleSummarize} disabled={isSummarizing} className="text-purple-600 hover:bg-purple-50 px-2 py-1 rounded transition">
                         {isSummarizing ? '生成中...' : '✨ AI 总结'}
