@@ -3,16 +3,21 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase credentials are missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
-}
+// 只有在有Supabase配置时才创建客户端
+export const supabase = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// 检查Supabase是否可用
+export const isSupabaseAvailable = (): boolean => {
+  return supabase !== null;
+};
 
 // 用户认证相关服务
 export const authService = {
   // 注册
   async signUp(email: string, password: string, username: string) {
+    if (!supabase) throw new Error('Supabase is not available');
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -30,6 +35,7 @@ export const authService = {
 
   // 登录
   async signIn(email: string, password: string) {
+    if (!supabase) throw new Error('Supabase is not available');
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -41,18 +47,21 @@ export const authService = {
 
   // 登出
   async signOut() {
+    if (!supabase) return;
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   },
 
   // 获取当前用户
   async getCurrentUser() {
+    if (!supabase) return null;
     const { data: { user } } = await supabase.auth.getUser();
     return user;
   },
 
   // 监听认证状态变化
   onAuthStateChange(callback: (event: string, session: any) => void) {
+    if (!supabase) return { data: { subscription: null } };
     return supabase.auth.onAuthStateChange(callback);
   }
 };
