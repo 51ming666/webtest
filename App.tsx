@@ -11,9 +11,10 @@ import {
   AboutView,
   TermsView,
   PrivacyView,
-  EditPost,
-  UserProfile
+  Button
 } from './components/Views';
+import { EditPost } from './components/EditPost';
+import { UserProfile } from './components/UserProfile';
 import { NotFoundPage } from './components/ErrorPage';
 import { HomeSEO } from './components/SEOHead';
 

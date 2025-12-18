@@ -27,8 +27,8 @@ const Avatar: React.FC<{ name: string; color?: string; size?: 'sm' | 'md' | 'lg'
   );
 };
 
-const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }> = ({ 
-  children, variant = 'primary', className = '', ...props 
+export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost' }> = ({
+  children, variant = 'primary', className = '', ...props
 }) => {
   const baseStyle = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   const variants = {
@@ -37,7 +37,7 @@ const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { variant
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-500"
   };
-  
+
   return (
     <button className={`${baseStyle} ${variants[variant]} ${className}`} {...props}>
       {children}
